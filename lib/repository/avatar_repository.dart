@@ -6,7 +6,7 @@ import '../model/avatar.dart';
 
 class AvatarRepository {
   static const _gistUrl =
-      "https://gist.githubusercontent.com/cafefarm-johnny/ad6ca270049e3fbd24be0cae2e20fd6d/raw/29ca0883e25f9928dfa8885db43f5908f3c57b63/chat_app_peoples_data.json";
+      "https://gist.githubusercontent.com/cafefarm-johnny/ad6ca270049e3fbd24be0cae2e20fd6d/raw/e20114cc476ddb54cdc33bf2223dfc55c74074a3/chat_app_peoples_data.json";
 
   final friends = <Avatar>[];
 
