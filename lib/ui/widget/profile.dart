@@ -1,16 +1,15 @@
+import 'package:chat_app/model/avatar.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatelessWidget {
   const Profile({
     Key? key,
-    required this.avatarUrl,
-    required this.nickname,
-    required this.statusMessage,
+    required this.user,
+    required this.onTap,
   }) : super(key: key);
 
-  final String avatarUrl;
-  final String nickname;
-  final String statusMessage;
+  final Avatar user;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +17,16 @@ class Profile extends StatelessWidget {
   }
 
   Widget _buildProfile() {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(avatarUrl),
+    return GestureDetector(
+      onTap: onTap,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(user.url!),
+        ),
+        title: Text(user.nickname!),
+        subtitle: Text(user.statusMessage!),
+        trailing: const Icon(Icons.more_vert),
       ),
-      title: Text(nickname),
-      subtitle: Text(statusMessage),
-      trailing: const Icon(Icons.more_vert),
     );
   }
 }

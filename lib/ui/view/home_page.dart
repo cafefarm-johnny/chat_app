@@ -1,11 +1,13 @@
 import 'package:chat_app/model/avatar.dart';
-import 'package:chat_app/ui/widget/profile.dart';
+import 'package:chat_app/ui/widget/profile_detail.dart';
 import 'package:chat_app/view_model/avatar_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../widget/profile.dart';
+
 class HomePage extends StatelessWidget {
-  const HomePage({
+  HomePage({
     Key? key,
     required this.me,
   }) : super(key: key);
@@ -29,28 +31,30 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBody(AvatarModel avatarModel) {
-    return ListView(
+    return Stack(
       children: [
-        ElevatedButton(
-          onPressed: () {
-            avatarModel.fetch(me);
-          },
-          child: const Text('새로고침'),
+        ListView(
+          children: [
+            Profile(
+              user: me,
+              onTap: () => _onTapProfile(avatarModel, me),
+            ),
+            const Divider(),
+            // spread 연산자를 사용하여 리스트를 펼친다.
+            ...avatarModel.friends
+                .map((friend) => Profile(
+                      user: friend,
+                      onTap: () => _onTapProfile(avatarModel, friend),
+                    ))
+                .toList(),
+          ],
         ),
-        Profile(
-          avatarUrl: me.url!,
-          nickname: me.nickname!,
-          statusMessage: me.statusMessage!,
+        ProfileDetail(
+          // (중요) ViewModel 에서 상태를 취급하고, 각 커스텀 위젯을 stateless로 구현하여 위젯간 커플링을 제거한다.
+          user: avatarModel.selectedUser,
+          isExpanded: avatarModel.isExpanded,
+          onClose: avatarModel.toggle,
         ),
-        const Divider(),
-        // spread 연산자를 사용하여 리스트를 펼친다.
-        ...avatarModel.friends
-            .map((e) => Profile(
-                  avatarUrl: e.url!,
-                  nickname: e.nickname!,
-                  statusMessage: e.statusMessage!,
-                ))
-            .toList(),
       ],
     );
   }
@@ -72,5 +76,10 @@ class HomePage extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _onTapProfile(AvatarModel avatarModel, Avatar user) {
+    avatarModel.selectUser(user);
+    avatarModel.toggle();
   }
 }

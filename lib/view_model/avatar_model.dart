@@ -4,8 +4,18 @@ import '../model/avatar.dart';
 import '../repository/avatar_repository.dart';
 
 class AvatarModel with ChangeNotifier {
-  var friends = <Avatar>[];
-  var isLoading = false;
+  var _friends = <Avatar>[];
+  var _isLoading = false;
+
+  // Profile 상세화면
+  var _isExpanded = false;
+  Avatar? _selectedUser;
+
+  // 외부에서 데이터를 변경할 수 없도록 필드 정보를 캡슐화하고, getter를 제공한다.
+  get friends => _friends;
+  get isLoading => _isLoading;
+  get isExpanded => _isExpanded;
+  get selectedUser => _selectedUser;
 
   final _avatarRepository = AvatarRepository();
 
@@ -15,13 +25,27 @@ class AvatarModel with ChangeNotifier {
   }
 
   Future<void> fetch(Avatar me) async {
-    isLoading = true;
+    _isLoading = true;
     notifyListeners();
 
-    friends = await _avatarRepository.fetch(me);
+    _friends = await _avatarRepository.fetch(me);
 
     // View에게 변경사항을 통지
-    isLoading = false;
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  void selectUser(Avatar user) {
+    _selectedUser = user;
+    notifyListeners();
+  }
+
+  void toggle() {
+    if (_isExpanded && _selectedUser != null) {
+      _selectedUser = null;
+    }
+
+    _isExpanded = !_isExpanded;
     notifyListeners();
   }
 }
